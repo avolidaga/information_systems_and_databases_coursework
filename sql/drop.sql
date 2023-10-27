@@ -1,0 +1,16 @@
+DROP TYPE IF EXISTS request_status_enum CASCADE;
+DROP TYPE IF EXISTS sex_enum CASCADE;
+DROP TYPE IF EXISTS location_enum CASCADE;
+DROP TABLE company_specialisation;
+DROP TABLE science_lab;
+DROP TABLE lab_request;
+DROP TABLE company_request;
+DROP TABLE company;
+DROP TABLE staff_request;
+DROP TABLE staff;
+DROP TABLE  user_request;
+DROP TABLE fabric_texture;
+DROP TABLE user_spacesuit_data;
+-- DROP TABLE users;
+DROP TABLE additional_char;
+DROP TABLE user_data;
