@@ -12,7 +12,7 @@ CREATE TYPE location_enum AS ENUM (
  'EARTH',
  'MARS'
 );
-CREATE TABLE IF NOT EXISTS company_ specialisation(
+CREATE TABLE IF NOT EXISTS company_specialisation(
   company_specialisation_id INT PRIMARY KEY,
   company_specialisation_name VARCHAR(100)
 );
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS lab_request(
 );
 CREATE TABLE IF NOT EXISTS company_request(
   company_request_id INT PRIMARY KEY ,
-  status “request_status”
+  status request_status_enum
 );
 CREATE TABLE IF NOT EXISTS company(
   company_id INT PRIMARY KEY ,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS company(
 );
 CREATE TABLE IF NOT EXISTS staff_request(
   staff_request_id INT PRIMARY KEY ,
-  status “request_status”,
+  status request_status_enum,
   name VARCHAR(100),
   user_request_id INT
 );
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS user_spacesuit_data(
   height INT,
   fabric_texture_id INT
 );
-CREATE TABLE IF NOT EXISTS user(
+CREATE TABLE IF NOT EXISTS user (
   user_id INT PRIMARY KEY ,
   user_spacesuit_data_id INT ,
 user_data_id INT,
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS additional_char(
 CREATE TABLE IF NOT EXISTS user_data(
   user_data_id INT PRIMARY KEY,
 age INT,
-sex “sex”,
+sex sex_enum,
 weight INT,
 height INT,
 hair_color VARCHAR(255),
