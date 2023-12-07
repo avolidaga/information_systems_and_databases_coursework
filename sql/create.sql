@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS user_data (
 
 CREATE TABLE IF NOT EXISTS users (
   user_id serial PRIMARY KEY,
-  user_spacesuit_data_id INT NOT NULL,
+  user_spacesuit_data_id INT,
   user_data_id INT NOT NULL,
   name VARCHAR(100) NOT NULL,
   CONSTRAINT fk_user_user_spacesuit_data FOREIGN KEY (user_spacesuit_data_id) REFERENCES user_spacesuit_data(user_spacesuit_data_id) ON DELETE CASCADE,
