@@ -70,8 +70,7 @@ def generate_insert_statements(table, num_rows):
 # Example usage
 tables = ['user_spacesuit_data',  'user_request', 'users']
 tables_2 = [
-    'company_specialisation', 'lab_request', 'company_request',
-    'staff_request', 'staff',
+    'lab_request', 'company_request','staff_request', 'staff',
     'additional_char'
 ]
 
