@@ -46,9 +46,7 @@ def generate_insert_statements(table, num_rows):
         elif table == 'company_request':
             insert_statements.append(f"INSERT INTO company_request (status) VALUES ('{random.choice(['DECLINED', 'ON_CHECKING', 'IN_PROGRESS', 'ACCEPTED'])}');")
 
-        elif table == 'company':
-            insert_statements.append(f"INSERT INTO company (name, company_specialisation_id) VALUES ('{generate_random_string()}', {random.randint(1, 100)});")
-
+        
         elif table == 'fabric_texture':
             insert_statements.append(f"INSERT INTO fabric_texture (fabric_texture_name) VALUES ('{generate_random_string()}');")
 
@@ -73,7 +71,7 @@ def generate_insert_statements(table, num_rows):
 tables = ['user_spacesuit_data',  'user_request', 'users']
 tables_2 = [
     'company_specialisation', 'lab_request', 'company_request',
-    'company', 'staff_request', 'staff',
+    'staff_request', 'staff',
     'additional_char'
 ]
 
