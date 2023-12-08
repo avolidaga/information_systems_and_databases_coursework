@@ -32,7 +32,7 @@ def generate_insert_statements(table, num_rows):
 
         elif table == 'users':
             insert_statements.append(f"INSERT INTO users (user_spacesuit_data_id, user_data_id, name) VALUES "
-                                    f"({random.randint(1, 10000)}, {random.randint(1, 10000)}, '{generate_random_string()}');")
+                                    f"({random.randint(1, 30000)}, {random.randint(1, 30000)}, '{generate_random_string()}');")
 
         elif table == 'lab_request':
             insert_statements.append(f"INSERT INTO lab_request (science_lab_id) VALUES ({random.randint(1, 6)});")
@@ -60,7 +60,7 @@ tables_2 = [
     'additional_char'
 ]
 
-for table in tables_2:
+for table in tables:
     insert_statements = generate_insert_statements(table, 10000)
 
 
