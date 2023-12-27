@@ -120,76 +120,83 @@ $$ LANGUAGE plpgsql;
 
 
 
--- Создание функции для одновременного оформления заказов на скафандр, шлем и белье
-CREATE OR REPLACE FUNCTION place_orders(
-    p_user_id INT
+CREATE OR REPLACE FUNCTION create_user(
+    var_customer_id int,
+    distance float,
+    var_vehicle_id int,
+    v_weight float,
+    v_width float,
+    v_height float,
+    v_length float,
+    v_cargo_type cargo_type
+) RETURNS int AS
+'
+    DECLARE
+        calculated_price float;
+        ord_id           int;
+    BEGIN
+        calculated_price = distance * 20;
+        INSERT INTO orders (customer_id, distance, price, order_date, vehicle_id)
+        VALUES (var_customer_id, distance, calculated_price, NOW(), var_vehicle_id)
+        RETURNING id INTO ord_id;
+
+        INSERT INTO order_statuses (order_id, date_time, status)
+        VALUES (ord_id, NOW(), ''ACCEPTED'');
+
+        INSERT INTO cargo (weight, width, height, length, order_id, cargo_type)
+        VALUES (v_weight, v_width, v_height, v_length, ord_id, v_cargo_type);
+        RETURN ord_id;
+    END
+' LANGUAGE plpgsql;
+
+
+
+
+CREATE OR REPLACE PROCEDURE create_spacesuit_request(
+    IN p_user_id INT,
+    IN p_user_name VARCHAR(100)
 )
-RETURNS VOID AS
-$$
+AS $$
 DECLARE
-    v_user_location location_enum;
-    v_user_data_height INT;
-    v_spacesuit_company_id INT;
-    v_helmet_company_id INT;
-    v_underwear_company_id INT;
-    v_company_request_id INT;
-    v_staff_request_id INT;
+    v_spacesuit_id INT;
 BEGIN
-    -- Получение информации о местоположении пользователя
-    SELECT u.location, ud.height
-    INTO v_user_location, v_user_data_height
-    FROM users u
-    JOIN user_data ud ON u.user_data_id = ud.user_data_id
-    WHERE u.user_id = p_user_id;
+    -- Шаг 1: Предварительное исследование и опрос
+    -- (ваш код здесь, например, вызов функции для исследования среды)
 
-    -- Определение компаний для заказа в зависимости от географического местоположения пользователя
-    SELECT company_id INTO v_spacesuit_company_id
-    FROM company
-    WHERE company_specialisation_id = 1 -- Предполагается, что 1 - это ID специализации для скафандров
-    ORDER BY RANDOM()
-    LIMIT 1;
+    -- Шаг 2: Снятие мерок от пользователя
+    PERFORM measure_spacesuit(p_user_id);
 
-    SELECT company_id INTO v_helmet_company_id
-    FROM company
-    WHERE company_specialisation_id = 2 -- Предполагается, что 2 - это ID специализации для шлемов
-    ORDER BY RANDOM()
-    LIMIT 1;
+    -- Шаг 3: Отправление данных в архив
+    PERFORM archive_measurements(p_user_id);
 
-    SELECT company_id INTO v_underwear_company_id
-    FROM company
-    WHERE company_specialisation_id = 3 -- Предполагается, что 3 - это ID специализации для белья
-    ORDER BY RANDOM()
-    LIMIT 1;
+    -- Шаг 4: Создание заказа на скафандр
+    v_spacesuit_id := order_spacesuit(p_user_id);
 
-    -- Вставка заказа на скафандр в таблицу company_request
-    INSERT INTO company_request (status)
-    VALUES ('ON_CHECKING')
-    RETURNING company_request_id INTO v_company_request_id;
+    -- Шаг 5: Оформление заказа на шлем
+    PERFORM order_helmet(v_spacesuit_id);
 
-    -- Вставка записи на скафандр в таблицу staff_request
-    INSERT INTO staff_request (status, user_request_id, company_id, company_request_id)
-    VALUES ('ON_CHECKING', (SELECT user_request_id FROM user_request WHERE user_id = p_user_id), v_spacesuit_company_id, v_company_request_id)
-    RETURNING staff_request_id INTO v_staff_request_id;
+    -- Шаг 6: Разработка белья на заводе
+    PERFORM develop_underwear(p_user_id);
 
-    -- Вставка заказа на шлем в таблицу company_request
-    INSERT INTO company_request (status)
-    VALUES ('ON_CHECKING')
-    RETURNING company_request_id INTO v_company_request_id;
+    -- Шаг 7: Тестирование белья
+    PERFORM test_underwear(v_spacesuit_id);
 
-    -- Вставка записи на шлем в таблицу staff_request
-    INSERT INTO staff_request (status, user_request_id, company_id, company_request_id)
-    VALUES ('ON_CHECKING', (SELECT user_request_id FROM user_request WHERE user_id = p_user_id), v_helmet_company_id, v_company_request_id)
-    RETURNING staff_request_id INTO v_staff_request_id;
+    -- Шаг 8: Отправка белья на доработку или завершение
+    PERFORM finalize_underwear(v_spacesuit_id);
 
-    -- Вставка заказа на белье в таблицу company_request
-    INSERT INTO company_request (status)
-    VALUES ('ON_CHECKING')
-    RETURNING company_request_id INTO v_company_request_id;
+    -- Шаг 9: Упаковка и отправка белья
+    PERFORM pack_and_ship_underwear(v_spacesuit_id, p_user_name);
 
-    -- Вставка записи на белье в таблицу staff_request
-    INSERT INTO staff_request (status, user_request_id, company_id, company_request_id)
-    VALUES ('ON_CHECKING', (SELECT user_request_id FROM user_request WHERE user_id = p_user_id), v_underwear_company_id, v_company_request_id)
-    RETURNING staff_request_id INTO v_staff_request_id;
+    -- Шаг 10: Сборка уникального костюма
+    PERFORM assemble_custom_costume(v_spacesuit_id);
+
+    -- Шаг 11: Оформление заказа в МКС
+    PERFORM order_to_ISS(v_spacesuit_id);
+
+    -- Шаг 12: Доставка костюма в МКС
+    PERFORM deliver_to_ISS(v_spacesuit_id);
 END;
 $$ LANGUAGE plpgsql;
+
+
 

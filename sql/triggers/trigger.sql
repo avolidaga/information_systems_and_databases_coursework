@@ -110,3 +110,28 @@ CREATE TRIGGER check_company_name_trigger
     FOR EACH ROW
 EXECUTE FUNCTION check_company_name();
 
+CREATE OR REPLACE FUNCTION check_weight_and_waist_in_users()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_weight INT;
+    v_waist INT;
+BEGIN
+    SELECT user_data.weight, usd.waist
+    INTO v_weight, v_waist
+    FROM user_spacesuit_data usd, user_data
+    WHERE usd.user_spacesuit_data_id = NEW.user_spacesuit_data_id;
+
+    IF v_weight > 100 AND v_waist < 40 THEN
+        RAISE EXCEPTION 'Invalid combination of weight and waist size in user_spacesuit_data.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS check_weight_and_waist_in_users_trigger ON users;
+CREATE TRIGGER check_weight_and_waist_in_users_trigger
+    BEFORE INSERT OR UPDATE
+    ON users
+    FOR EACH ROW
+EXECUTE FUNCTION check_weight_and_waist_in_users();

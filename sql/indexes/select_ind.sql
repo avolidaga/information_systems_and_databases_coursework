@@ -15,4 +15,4 @@ SELECT users.name, user_spacesuit_data.head, user_spacesuit_data.waist
 FROM users
 JOIN user_spacesuit_data ON users.user_spacesuit_data_id = user_spacesuit_data.user_spacesuit_data_id
 WHERE user_spacesuit_data.head > 50
-AND user_spacesuit_data.waist < 40;
+AND user_spacesuit_data.waist < 100;
