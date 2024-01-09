@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS staff (
 
 CREATE TABLE IF NOT EXISTS user_data (
   user_data_id serial PRIMARY KEY,
-  age INT NOT NULL CHECK (age >= 18),
+  birth_date DATE NOT NULL CHECK (birth_date <= CURRENT_DATE - 18 * INTERVAL '1 year'),
   sex sex_enum NOT NULL,
   weight INT NOT NULL CHECK (weight > 0),
   height INT NOT NULL CHECK (height > 0 AND height <= 300),

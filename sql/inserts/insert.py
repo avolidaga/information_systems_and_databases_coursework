@@ -1,6 +1,8 @@
 
 import random
 import string
+from datetime import datetime, timedelta
+
 
 # Function to generate random strings
 def generate_random_string(length=10):
@@ -11,6 +13,12 @@ def random_hair_color():
     hair_colors = ['black', 'brown', 'blonde', 'red', 'gray', 'white']
     return random.choice(hair_colors)
 
+def generate_random_date():
+    start_date = datetime(1960, 1, 1)
+    end_date = datetime(2005, 1, 1)
+    random_days = random.randint(0, (end_date - start_date).days)
+    random_date = start_date + timedelta(days=random_days)
+    return random_date.strftime('%Y-%m-%d')
 
 # Function to generate random values for the columns
 def generate_insert_statements(table, num_rows):
@@ -23,8 +31,8 @@ def generate_insert_statements(table, num_rows):
                                     f"{random.randint(30, 100)}, {random.randint(30, 50)}, {random.randint(150, 200)}, {random.randint(1, 5)});")
 
         elif table == 'user_data':
-            insert_statements.append(f"INSERT INTO user_data (age, sex, weight, height, hair_color, location) VALUES "
-                                    f"({random.randint(18, 80)}, '{random.choice(['MEN', 'WOMEN'])}', {random.randint(40, 150)}, "
+            insert_statements.append(f"INSERT INTO user_data (birth_date, sex, weight, height, hair_color, location) VALUES "
+                                    f"('{generate_random_date()}', '{random.choice(['MEN', 'WOMEN'])}', {random.randint(40, 150)}, "
                                     f"{random.randint(100, 210)}, '{random_hair_color()}', '{random.choice(['EARTH', 'MARS'])}');")
 
         elif table == 'user_request':
@@ -59,8 +67,8 @@ tables_2 = [
     'lab_request', 'company_request', 'staff_request',
     'additional_char'
 ]
-
-for table in tables:
+tables_data = ['user_data']
+for table in tables_data:
     insert_statements = generate_insert_statements(table, 10000)
 
 
